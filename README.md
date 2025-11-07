@@ -1,14 +1,12 @@
 # CT Reconstruction & Beam Hardening Analysis (ASTRA-Toolbox)
 
-This repository contains a Python-based computational imaging project to address a **ZEISS** technical challenge on **"beam hardening" (BH) artifacts**.
+This repository contains a Python-based computational imaging project to address a technical challenge on **"beam hardening" (BH) artifacts**.
 
 The Jupyter Notebook implements the standard **Feldkamp-Davis-Kress (FDK)** reconstruction algorithm to reproduce and visualize the baseline artifacts (streaks and cupping) from a 3D Cone-Beam CT (CBCT) dataset.
 
 ## ℹ️ Technical Challenge
 
-The official task PDF suggested using the TIGRE toolbox. However, TIGRE installation failed in the Google Colab environment.
-
-This implementation therefore uses the **ASTRA-Toolbox**, a powerful library for tomographic reconstruction, which required a custom `condacolab` environment setup to run in Colab.
+This implementation uses the **ASTRA-Toolbox** as an alternative to TIGRE toolbox, a powerful library for tomographic reconstruction, which required a custom `condacolab` environment setup to run in Colab.
 
 ## 🛠️ Tech Stack & Pipeline
 
@@ -18,7 +16,8 @@ This project is implemented in a Jupyter Notebook designed for Google Colab with
     * Uses **Condacolab** to install the **ASTRA-Toolbox** (`astra-toolbox`), `imageio`, and `gdown` (for data handling) from conda-forge channels.
 
 2.  **Data Pre-processing:**
-    * Uses `gdown` to automatically download the 2GB+ `projections.zip` data from Google Drive. *(Note: The data link is public but owned by the author).*
+    * Uses `gdown` to automatically download the 2GB+ `projections.zip` data from Google Drive.
+      https://drive.google.com/drive/folders/1ayBozT1QAVTLbs1M8UbZXeXOMtDUToyl?usp=drive_link
     * Loads 512 raw `.png` X-ray projections.
     * Performs air normalization (using 99.9th percentile as $I_0$).
     * Applies the logarithmic conversion (`-np.log(I/I0)`) to get linear attenuation (sinogram) data.
