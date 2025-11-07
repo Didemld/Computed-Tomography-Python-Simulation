@@ -17,15 +17,15 @@ The goal is to visualize BH artifacts (streaks, cupping) on a 512-view cone-beam
    - Convert projections to line integrals via air normalization (`I0 = 99.9th percentile`) and `-log(I/I0)`.  
    - Save sinogram and angles as NumPy arrays (`/content/sino3d.npy`, `/content/angles.npy`).
 
-   Data folder (example):  
-   https://drive.google.com/drive/folders/1ayBozT1QAVTLbs1M8UbZXeXOMtDUToyl?usp=drive_link
+   Data folder (example):
+   https://drive.google.com/drive/folders/14ZjXgc9iCxmQyFoFudpBK0pK5CH--fkx?usp=drive_link
 
-3. **Reconstruction:**  
+4. **Reconstruction:**  
    - **Geometry:** cone-beam with `DSO = 100 mm`, `DSD = 1500 mm`, detector pixel size `0.8 mm`.  
    - **Volume:** `512 × 512 × 512` voxels, physical extent `[-20, 20] mm` in all axes.  
    - **FDK_CUDA** (analytical) and **SIRT3D_CUDA** (iterative, 200 iters).
 
-4. **Visualization:**  
+5. **Visualization:**  
    Axial / XZ / YZ cross-sections are saved as PNG. Display window: `[0.15 × min, 0.15 × max]`. Axis flips are applied to match the reference PDF orientation.
 
 ## 🚀 Running on Google Colab
