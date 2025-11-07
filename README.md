@@ -1,55 +1,49 @@
 # CT Reconstruction & Beam Hardening Analysis (ASTRA-Toolbox)
 
-This repository contains a Python-based computational imaging project to address a technical challenge on **"beam hardening" (BH) artifacts**.
-
-The Jupyter Notebook implements the standard **Feldkamp-Davis-Kress (FDK)** reconstruction algorithm to reproduce and visualize the baseline artifacts (streaks and cupping) from a 3D Cone-Beam CT (CBCT) dataset.
+This repository contains a Google Colab–oriented workflow to reproduce **beam hardening (BH)** artifacts and run baseline **3D CBCT** reconstructions with **ASTRA-Toolbox** on GPU. The notebook implements **FDK (FDK_CUDA)** and **iterative SIRT (SIRT3D_CUDA)**.
 
 ## ℹ️ Technical Challenge
 
-This implementation uses the **ASTRA-Toolbox** as an alternative to TIGRE toolbox, a powerful library for tomographic reconstruction, which required a custom `condacolab` environment setup to run in Colab.
+The goal is to visualize BH artifacts (streaks, cupping) on a 512-view cone-beam dataset and to provide baseline reconstructions for further analysis. ASTRA-Toolbox is used as a TIGRE alternative and is set up inside Colab via **condacolab** (conda channels: `astra-toolbox`, `conda-forge`).
 
-## 🛠️ Tech Stack & Pipeline
+## 🛠️ Pipeline
 
-This project is implemented in a Jupyter Notebook designed for Google Colab with a GPU.
+1. **Environment (Colab, GPU):**  
+   The Colab kernel is prepared with **condacolab**; packages installed: `astra-toolbox`, `imageio`, and `matplotlib`.
 
-1.  **Environment Setup:**
-    * Uses **Condacolab** to install the **ASTRA-Toolbox** (`astra-toolbox`), `imageio`, and `gdown` (for data handling) from conda-forge channels.
+2. **Data Preparation:**  
+   - Input: **512 PNG projections** named `Object_BH_Proj000.png` … `Object_BH_Proj511.png`.  
+   - Place them under `/content/projections/projections_folder/` (for example, by uploading a `projections.zip` and unzipping to that path).  
+   - Convert projections to line integrals via air normalization (`I0 = 99.9th percentile`) and `-log(I/I0)`.  
+   - Save sinogram and angles as NumPy arrays (`/content/sino3d.npy`, `/content/angles.npy`).
 
-2.  **Data Pre-processing:**
-    * Uses `gdown` to automatically download the 2GB+ `projections.zip` data from Google Drive.
-      https://drive.google.com/drive/folders/1ayBozT1QAVTLbs1M8UbZXeXOMtDUToyl?usp=drive_link
-    * Loads 512 raw `.png` X-ray projections.
-    * Performs air normalization (using 99.9th percentile as $I_0$).
-    * Applies the logarithmic conversion (`-np.log(I/I0)`) to get linear attenuation (sinogram) data.
+   Data folder (example):  
+   https://drive.google.com/drive/folders/1ayBozT1QAVTLbs1M8UbZXeXOMtDUToyl?usp=drive_link
 
-3.  **ASTRA Reconstruction (FDK):**
-    * Defines the precise **cone-beam geometry** as specified in the ZEISS task PDF (DSO=100mm, DSD=1500mm, etc.).
-    * Creates a 3D volume geometry (512x512x512).
-    * Runs the reconstruction using ASTRA's GPU-accelerated FDK algorithm (`astra.astra_dict('FDK_CUDA')`).
+3. **Reconstruction:**  
+   - **Geometry:** cone-beam with `DSO = 100 mm`, `DSD = 1500 mm`, detector pixel size `0.8 mm`.  
+   - **Volume:** `512 × 512 × 512` voxels, physical extent `[-20, 20] mm` in all axes.  
+   - **FDK_CUDA** (analytical) and **SIRT3D_CUDA** (iterative, 200 iters).
 
-4.  **Visualization:**
-    * Saves the X, Y, and Z cross-sections from the reconstructed volume.
-    * Applies the specific visualization windowing (`[0.15*min, 0.15*max]`) mentioned in the PDF to correctly display the beam hardening artifacts.
+4. **Visualization:**  
+   Axial / XZ / YZ cross-sections are saved as PNG. Display window: `[0.15 × min, 0.15 × max]`. Axis flips are applied to match the reference PDF orientation.
 
-## 🚀 Getting Started
+## 🚀 Running on Google Colab
 
-To run this simulation:
-
-1.  Open the notebook in Google Colab and ensure you are assigned a **GPU runtime**.
-2.  Run the first cell to install `condacolab`, `gdown`, and restart the kernel.
-3.  Run the second cell to install `astra-toolbox`.
-4.  Run the data loading cell (this will download the data via `gdown`) and the `run_fdk.py` cell to generate the reconstruction.
+- Open the notebook in **Google Colab** and select **GPU** (Runtime → Change runtime type → GPU).  
+- Run cells sequentially: environment setup → data setup (place projections) → reconstruction (FDK, SIRT).  
+- No local installation is required.
 
 ## 📊 Demonstration: FDK Baseline Results (Artifacted)
 
-*X-axis (YZ plane), Y-axis (XZ plane), and Z-axis (Axial) cross-sections showing severe beam hardening artifacts.*
+*X-axis (YZ plane), Y-axis (XZ plane), and Z-axis (Axial) cross-sections showing beam hardening artifacts.*
 
-<img width="512" height="512" alt="FDK x-axis" src="https://github.com/user-attachments/assets/11a3f212-04f9-42c0-a4d2-7b72371bf9aa" />
-<img width="512" height="512" alt="FDK y-axis" src="httpsG://github.com/user-attachments/assets/8fc18ba0-fed4-4ecc-8c5d-9854e1c2c067" />
-<img width="512" height="512" alt="FDK z-axis" src="https:G//github.com/user-attachments/assets/388b1eb5-f9c4-415d-a37c-e1594bef6875" />
+<img width="512" height="512" alt="FDK x-axis" src="https://github.com/user-attachments/assets/11a3f212-04f9-42c0-a4d2-7b72371bf9aa" />  
+<img width="512" height="512" alt="FDK y-axis" src="https://github.com/user-attachments/assets/8fc18ba0-fed4-4ecc-8c5d-9854e1c2c067" />  
+<img width="512" height="512" alt="FDK z-axis" src="https://github.com/user-attachments/assets/388b1eb5-f9c4-415d-a37c-e1594bef6875" />
 
 ## 👤 Contact
 
-**Didem Doğan Başkaya**
-* **LinkedIn:** [`in/didemdoganbaskaya`](https://www.linkedin.com/in/didemdoganbaskaya)
-* **GitHub:** [`Didemld`](https://github.com/Didemld)
+**Didem Doğan Başkaya**  
+- LinkedIn: [`in/didemdoganbaskaya`](https://www.linkedin.com/in/didemdoganbaskaya)  
+- GitHub: [`Didemld`](https://github.com/Didemld)
